@@ -101,16 +101,9 @@ public class MainActivity extends AppCompatActivity {
 
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
-        // Create a new fragment and specify the planet to show based on position
-        Fragment fragment = new CourtRoomFragment();
-
-        Bundle args = new Bundle();
-        args.putInt(CourtRoomFragment.ARG_COURT_ROOM_NUMBER, position);
-        fragment.setArguments(args);
-
-        // Insert the fragment by replacing any existing fragment
-        FragmentManager fragmentManager = getSupportFragmentManager();
-        fragmentManager.beginTransaction().replace(R.id.content_frame, fragment).commit();
+        getSupportFragmentManager().beginTransaction()
+                .replace(R.id.content_frame, CourtRoomFragment.newInstance(position))
+                .commit();
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
