@@ -3,15 +3,14 @@ package com.plumya.jurisprudenceon;
 import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.os.PersistableBundle;
-import android.support.v4.app.ActionBarDrawerToggle;
+import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
-import android.support.v7.app.ActionBarActivity;
-import android.os.Bundle;
-
+import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,14 +19,15 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
-import com.parse.ParseObject;
 import com.plumya.jurisprudenceon.fragments.CourtRoomFragment;
 
 
-public class MainActivity extends ActionBarActivity {
+public class MainActivity extends AppCompatActivity {
+
+    private Toolbar toolbar;
 
     private String[] mCourtRooms;
-    private DrawerLayout mDrawerLayout;
+    private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
     private CharSequence mDrawerTitle;
@@ -39,7 +39,7 @@ public class MainActivity extends ActionBarActivity {
         setContentView(R.layout.activity_main);
 
         mCourtRooms = getResources().getStringArray(R.array.court_rooms_array);
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerList = (ListView) findViewById(R.id.left_drawer);
 
         // Set the adapter for the list view
@@ -50,35 +50,28 @@ public class MainActivity extends ActionBarActivity {
         mTitle = mDrawerTitle = getTitle();
 
         // set a custom shadow that overlays the main content when the drawer opens
-        mDrawerLayout.setDrawerShadow(R.mipmap.drawer_shadow, GravityCompat.START);
+        drawer.setDrawerShadow(R.mipmap.drawer_shadow, GravityCompat.START);
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // enable ActionBar app icon to behave as action to toggle nav drawer
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         getSupportActionBar().setHomeButtonEnabled(true);
 
+        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
-        mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerToggle = new ActionBarDrawerToggle(this, mDrawerLayout, R.mipmap.ic_drawer,
-                                                  R.string.drawer_open, R.string.drawer_close) {
-
-            /** Called when a drawer has settled in a completely closed state. */
+        mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
                 super.onDrawerClosed(view);
-                getSupportActionBar().setTitle(mTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
 
-            /** Called when a drawer has settled in a completely open state. */
             public void onDrawerOpened(View drawerView) {
                 super.onDrawerOpened(drawerView);
-                getSupportActionBar().setTitle(mDrawerTitle);
                 invalidateOptionsMenu(); // creates call to onPrepareOptionsMenu()
             }
         };
 
-        // Set the drawer toggle as the DrawerListener
-        mDrawerLayout.setDrawerListener(mDrawerToggle);
+        drawer.setDrawerListener(mDrawerToggle);
 
         if (savedInstanceState == null) {
             selectItem(0);
@@ -88,7 +81,6 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
-        // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
@@ -102,9 +94,8 @@ public class MainActivity extends ActionBarActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = mDrawerLayout.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = drawer.isDrawerOpen(mDrawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
-
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -125,7 +116,7 @@ public class MainActivity extends ActionBarActivity {
         mDrawerList.setItemChecked(position, true);
         setTitle(mCourtRooms[position]);
 
-        mDrawerLayout.closeDrawer(mDrawerList);
+        drawer.closeDrawer(mDrawerList);
     }
 
     @Override
