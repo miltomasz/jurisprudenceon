@@ -19,24 +19,35 @@ import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
 
+import com.noveogroup.android.log.Logger;
+import com.noveogroup.android.log.LoggerManager;
 import com.plumya.jurisprudenceon.fragments.CourtRoomFragment;
+
+
+import butterknife.ButterKnife;
+import butterknife.InjectView;
 
 
 public class MainActivity extends AppCompatActivity {
 
-    private Toolbar toolbar;
+    private static final Logger logger = LoggerManager.getLogger();
+
+    @InjectView(R.id.toolbar)
+    Toolbar toolbar;
 
     private String[] mCourtRooms;
     private DrawerLayout drawer;
     private ActionBarDrawerToggle mDrawerToggle;
     private ListView mDrawerList;
-    private CharSequence mDrawerTitle;
     private CharSequence mTitle;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+        ButterKnife.inject(this);
+        setSupportActionBar(toolbar);
+        logger.d("MainActivity created");
 
         mCourtRooms = getResources().getStringArray(R.array.court_rooms_array);
         drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
@@ -47,7 +58,7 @@ public class MainActivity extends AppCompatActivity {
         // Set the list's click listener
         mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
 
-        mTitle = mDrawerTitle = getTitle();
+        mTitle = getTitle();
 
         // set a custom shadow that overlays the main content when the drawer opens
         drawer.setDrawerShadow(R.mipmap.drawer_shadow, GravityCompat.START);
@@ -72,10 +83,12 @@ public class MainActivity extends AppCompatActivity {
         };
 
         drawer.setDrawerListener(mDrawerToggle);
+//        setTitle(R.string.app_name);
 
         if (savedInstanceState == null) {
             selectItem(0);
         }
+
     }
 
     @Override
@@ -107,7 +120,10 @@ public class MainActivity extends AppCompatActivity {
 
         // Highlight the selected item, update the title, and close the drawer
         mDrawerList.setItemChecked(position, true);
-        setTitle(mCourtRooms[position]);
+
+        if (position > 0) {
+            setTitle(mCourtRooms[position]);
+        }
 
         drawer.closeDrawer(mDrawerList);
     }

@@ -1,0 +1,20 @@
+<resources>
+    <color name="colorPrimaryExtraDark">#080B0C</color>
+    <color name="colorPrimaryDark">#2A4450</color>
+    <color name="colorPrimary">#3a5c6d</color>
+    <color name="colorAccent">#09b8d5</color>
+    <color name="darkOverlay">#99070B0D</color>
+    <color name="lightOverlay">#33070B0D</color>
+    <color name="lightGray">#cccccc</color>
+    <color name="brightRed">#e93434</color>
+    <color name="yellow">#ede292</color>
+    <color name="golden">#d2b26a</color>
+    <color name="red">#d21f25</color>
+    <color name="lightRed">#ed5a5a</color>
+    <color name="acquaMarine">#06827d</color>
+    <color name="primaryText">#dd000000</color>
+    <color name="secondaryText">#8a000000</color>
+    <color name="white87">#ddffffff</color>
+    <color name="white54">#8affffff</color>
+    <color name="white27">#45ffffff</color>
+</resources>
