@@ -10,8 +10,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.ListView;
 import android.widget.TextView;
 
+import com.parse.ParseObject;
+import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
 
@@ -23,9 +26,8 @@ import java.util.Locale;
 public class CourtRoomFragment extends Fragment {
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
     private String courtRoom;
-    private RecyclerView mRecyclerView;
-    private RecyclerView.Adapter mAdapter;
-    private RecyclerView.LayoutManager mLayoutManager;
+    private ParseQueryAdapter<ParseObject> mainAdapter;
+    private ListView listView;
 
     public static CourtRoomFragment newInstance(int position) {
         CourtRoomFragment fragment = new CourtRoomFragment();
@@ -48,19 +50,13 @@ public class CourtRoomFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.court_room_fragment, container, false);
-        RecyclerView listView = (RecyclerView) rootView.findViewById(R.id.judgment_list);
+        listView = (ListView) rootView.findViewById(R.id.judgement_list);
+        // Initialize main ParseQueryAdapter
+        mainAdapter = new CourtRoomAdapter(getActivity());
+        mainAdapter.setTextKey("signature");
 
-        // use this setting to improve performance if you know that changes
-        // in content do not change the layout size of the RecyclerView
-        listView.setHasFixedSize(true);
-
-        // use a linear layout manager
-        mLayoutManager = new LinearLayoutManager(getActivity());
-        listView.setLayoutManager(mLayoutManager);
-
-        // specify an adapter (see also next example)
-        mAdapter = new CourtRoomAdapter(myDataset);
-        listView.setAdapter(mAdapter);
+        listView.setAdapter(mainAdapter);
+        mainAdapter.loadObjects();
 
         getActivity().setTitle(courtRoom);
         return rootView;
