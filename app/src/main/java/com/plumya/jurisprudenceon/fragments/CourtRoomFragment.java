@@ -58,7 +58,6 @@ public class CourtRoomFragment extends Fragment {
         listView.setAdapter(mainAdapter);
         mainAdapter.loadObjects();
 
-        getActivity().setTitle(courtRoom);
         return rootView;
     }
 

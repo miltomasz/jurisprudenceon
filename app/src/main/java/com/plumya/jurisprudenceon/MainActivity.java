@@ -4,8 +4,6 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
-import android.support.v4.app.Fragment;
-import android.support.v4.app.FragmentManager;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -35,11 +33,15 @@ public class MainActivity extends AppCompatActivity {
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
-    private String[] mCourtRooms;
-    private DrawerLayout drawer;
+    @InjectView(R.id.drawer_layout)
+    DrawerLayout drawer;
+
+    @InjectView(R.id.left_drawer)
+    ListView drawerList;
+
     private ActionBarDrawerToggle mDrawerToggle;
-    private ListView mDrawerList;
-    private CharSequence mTitle;
+
+    private String[] mCourtRooms;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -50,25 +52,11 @@ public class MainActivity extends AppCompatActivity {
         logger.d("MainActivity created");
 
         mCourtRooms = getResources().getStringArray(R.array.court_rooms_array);
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
-        mDrawerList = (ListView) findViewById(R.id.left_drawer);
-
-        // Set the adapter for the list view
-        mDrawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mCourtRooms));
-        // Set the list's click listener
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        mTitle = getTitle();
+        drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mCourtRooms));
+        drawerList.setOnItemClickListener(new DrawerItemClickListener());
 
         // set a custom shadow that overlays the main content when the drawer opens
         drawer.setDrawerShadow(R.mipmap.drawer_shadow, GravityCompat.START);
-        mDrawerList.setOnItemClickListener(new DrawerItemClickListener());
-
-        // enable ActionBar app icon to behave as action to toggle nav drawer
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        getSupportActionBar().setHomeButtonEnabled(true);
-
-        drawer = (DrawerLayout) findViewById(R.id.drawer_layout);
 
         mDrawerToggle = new ActionBarDrawerToggle(this, drawer, R.string.drawer_open, R.string.drawer_close) {
             public void onDrawerClosed(View view) {
@@ -83,12 +71,14 @@ public class MainActivity extends AppCompatActivity {
         };
 
         drawer.setDrawerListener(mDrawerToggle);
-//        setTitle(R.string.app_name);
+
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
+        getSupportActionBar().setHomeButtonEnabled(true);
+        getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         if (savedInstanceState == null) {
             selectItem(0);
         }
-
     }
 
     @Override
@@ -107,7 +97,7 @@ public class MainActivity extends AppCompatActivity {
     @Override
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
-        boolean drawerOpen = drawer.isDrawerOpen(mDrawerList);
+        boolean drawerOpen = drawer.isDrawerOpen(drawerList);
         menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
@@ -118,20 +108,19 @@ public class MainActivity extends AppCompatActivity {
                 .replace(R.id.content_frame, CourtRoomFragment.newInstance(position))
                 .commit();
 
-        // Highlight the selected item, update the title, and close the drawer
-        mDrawerList.setItemChecked(position, true);
-
         if (position > 0) {
             setTitle(mCourtRooms[position]);
+        } else {
+            setTitle(R.string.app_name);
         }
 
-        drawer.closeDrawer(mDrawerList);
+        drawerList.setItemChecked(position, true);
+        drawer.closeDrawer(drawerList);
     }
 
     @Override
     public void setTitle(CharSequence title) {
-        mTitle = title;
-        getSupportActionBar().setTitle(mTitle);
+        getSupportActionBar().setTitle(title);
     }
 
     @Override
