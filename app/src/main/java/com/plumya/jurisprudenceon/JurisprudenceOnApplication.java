@@ -13,7 +13,7 @@ public class JurisprudenceOnApplication extends Application {
     public void onCreate() {
         super.onCreate();
         // Enable Local Datastore.
-        Parse.enableLocalDatastore(this);
+//        Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "MQrDm7XKd6KrMwOx1m89qMNRpSDRzePGfpea1BaZ", "YEqL5U0e9mPlR2DZxph17FA42l3uhW77yiOt4eia");
 

@@ -6,22 +6,24 @@ import android.os.Handler;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
 import android.support.v4.widget.SwipeRefreshLayout;
-import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
-import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.TextView;
 
+import com.noveogroup.android.log.Logger;
+import com.noveogroup.android.log.LoggerManager;
+import com.parse.CountCallback;
+import com.parse.FindCallback;
+import com.parse.ParseException;
 import com.parse.ParseObject;
+import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
-import com.plumya.jurisprudenceon.MainActivity;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
 
+import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -31,11 +33,13 @@ import butterknife.InjectView;
  * Created by toml on 20.03.15.
  */
 public class CourtRoomFragment extends Fragment {
+    private static final Logger logger = LoggerManager.getLogger();
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
     private String courtRoom;
     private ParseQueryAdapter<ParseObject> mainAdapter;
-    private ListView listView;
+    private int courtRoomNumber;
 
+    private ListView listView;
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
@@ -50,11 +54,10 @@ public class CourtRoomFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        int courtRoomNumber = getArguments().getInt(ARG_COURT_ROOM_NUMBER);
+        courtRoomNumber = getArguments().getInt(ARG_COURT_ROOM_NUMBER);
         courtRoom = getResources().getStringArray(R.array.court_rooms_array)[courtRoomNumber];
         int imageId = getResources().getIdentifier(courtRoom.toLowerCase(Locale.getDefault()),
                 "drawable", getActivity().getPackageName());
-
 
     }
 
@@ -66,7 +69,7 @@ public class CourtRoomFragment extends Fragment {
 
         listView = (ListView) rootView.findViewById(R.id.judgement_list);
         // Initialize main ParseQueryAdapter
-        mainAdapter = new CourtRoomAdapter(getActivity());
+        mainAdapter = new CourtRoomAdapter(getActivity(), factory(courtRoomNumber));
         mainAdapter.setTextKey("signature");
 
         listView.setAdapter(mainAdapter);
@@ -77,6 +80,7 @@ public class CourtRoomFragment extends Fragment {
             public void onRefresh() {
                 refreshContent();
             }
+
             private void refreshContent() {
                 new Handler().postDelayed(new Runnable() {
                     @Override
@@ -87,7 +91,6 @@ public class CourtRoomFragment extends Fragment {
                 }, 1000);
             }
         });
-
         return rootView;
     }
 
@@ -95,4 +98,13 @@ public class CourtRoomFragment extends Fragment {
         return null;
     }
 
+    private ParseQueryAdapter.QueryFactory<ParseObject> factory(int courtRoomNumber) {
+        return new ParseQueryAdapter.QueryFactory<ParseObject>() {
+            public ParseQuery create() {
+                ParseQuery query = ParseQuery.getQuery("Judgement");
+                query.whereEqualTo("highPri", true);
+                return query;
+            }
+        };
+    }
 }
