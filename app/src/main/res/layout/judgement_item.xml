@@ -11,9 +11,7 @@
         android:layout_height="wrap_content"
         android:layout_alignParentRight="true"
         android:layout_alignParentTop="true"
-        android:textSize="@dimen/abc_text_size_body_1_material"
-        android:background="@color/yellow"
-        android:text="Test test"/>
+        style="@style/CourtRoomLabel" />
 
     <LinearLayout
         android:id="@+id/item_on_list_ll"

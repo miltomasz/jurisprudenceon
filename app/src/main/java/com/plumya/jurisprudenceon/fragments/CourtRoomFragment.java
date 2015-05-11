@@ -14,16 +14,12 @@ import android.widget.ListView;
 
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
-import com.parse.CountCallback;
-import com.parse.FindCallback;
-import com.parse.ParseException;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
 
-import java.util.List;
 import java.util.Locale;
 
 import butterknife.ButterKnife;
@@ -32,24 +28,17 @@ import butterknife.InjectView;
 /**
  * Created by toml on 20.03.15.
  */
-public class CourtRoomFragment extends Fragment {
+public abstract class CourtRoomFragment extends Fragment {
     private static final Logger logger = LoggerManager.getLogger();
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
+    protected ParseQueryAdapter<ParseObject> mainAdapter;
     private String courtRoom;
-    private ParseQueryAdapter<ParseObject> mainAdapter;
     private int courtRoomNumber;
 
-    private ListView listView;
+    protected ListView listView;
+
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
-
-    public static CourtRoomFragment newInstance(int position) {
-        CourtRoomFragment fragment = new CourtRoomFragment();
-        Bundle args = new Bundle();
-        args.putInt(CourtRoomFragment.ARG_COURT_ROOM_NUMBER, position);
-        fragment.setArguments(args);
-        return fragment;
-    }
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -69,7 +58,7 @@ public class CourtRoomFragment extends Fragment {
 
         listView = (ListView) rootView.findViewById(R.id.judgement_list);
         // Initialize main ParseQueryAdapter
-        mainAdapter = new CourtRoomAdapter(getActivity(), factory(courtRoomNumber));
+        mainAdapter = new CourtRoomAdapter(getActivity(), factory());
         mainAdapter.setTextKey("signature");
 
         listView.setAdapter(mainAdapter);
@@ -98,13 +87,16 @@ public class CourtRoomFragment extends Fragment {
         return null;
     }
 
-    private ParseQueryAdapter.QueryFactory<ParseObject> factory(int courtRoomNumber) {
+    protected ParseQueryAdapter.QueryFactory<ParseObject> factory() {
         return new ParseQueryAdapter.QueryFactory<ParseObject>() {
             public ParseQuery create() {
                 ParseQuery query = ParseQuery.getQuery("Judgement");
-                query.whereEqualTo("highPri", true);
+                query = whereConditions(query);
                 return query;
             }
         };
     }
+
+    protected abstract ParseQuery whereConditions(ParseQuery query);
+
 }

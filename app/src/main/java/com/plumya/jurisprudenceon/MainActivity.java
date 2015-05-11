@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -19,7 +20,13 @@ import android.widget.Toast;
 
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
-import com.plumya.jurisprudenceon.fragments.CourtRoomFragment;
+import com.parse.PushService;
+import com.plumya.jurisprudenceon.fragments.AllRoomsFragment;
+import com.plumya.jurisprudenceon.fragments.ICRoomFragment;
+import com.plumya.jurisprudenceon.fragments.IKCourtRoomFragment;
+import com.plumya.jurisprudenceon.fragments.IPUSiSPRoomFramgment;
+import com.plumya.jurisprudenceon.fragments.IWRoomFragment;
+import com.plumya.jurisprudenceon.fragments.PSRoomFragment;
 
 
 import butterknife.ButterKnife;
@@ -79,6 +86,8 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
+
+        PushService.setDefaultPushCallback(this, MainActivity.class);
     }
 
     @Override
@@ -105,8 +114,8 @@ public class MainActivity extends AppCompatActivity {
     /** Swaps fragments in the main content view */
     private void selectItem(int position) {
         getSupportFragmentManager().beginTransaction()
-                .replace(R.id.content_frame, CourtRoomFragment.newInstance(position))
-                .commit();
+                                   .replace(R.id.content_frame, fragment(position))
+                                   .commit();
 
         if (position > 0) {
             setTitle(mCourtRooms[position]);
@@ -116,6 +125,18 @@ public class MainActivity extends AppCompatActivity {
 
         drawerList.setItemChecked(position, true);
         drawer.closeDrawer(drawerList);
+    }
+
+    private Fragment fragment(int position) {
+        switch (position) {
+            case 0 : return AllRoomsFragment.newInstance(position);
+            case 1 : return ICRoomFragment.newInstance(position);
+            case 2 : return IKCourtRoomFragment.newInstance(position);
+            case 3 : return IPUSiSPRoomFramgment.newInstance(position);
+            case 4 : return IWRoomFragment.newInstance(position);
+            case 5 : return PSRoomFragment.newInstance(position);
+            default: return AllRoomsFragment.newInstance(position);
+        }
     }
 
     @Override
