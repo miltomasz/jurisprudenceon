@@ -29,6 +29,11 @@
             </intent-filter>
         </activity>
 
+        <activity
+            android:parentActivityName=".MainActivity"
+            android:name="com.plumya.jurisprudenceon.app.JudgementActivity"
+            android:label="@string/app_name" />
+
         <service android:name="com.parse.PushService" />
 
         <receiver android:name="com.parse.ParseBroadcastReceiver">

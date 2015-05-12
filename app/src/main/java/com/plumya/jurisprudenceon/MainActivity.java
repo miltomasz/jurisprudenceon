@@ -86,8 +86,6 @@ public class MainActivity extends AppCompatActivity {
         if (savedInstanceState == null) {
             selectItem(0);
         }
-
-        PushService.setDefaultPushCallback(this, MainActivity.class);
     }
 
     @Override

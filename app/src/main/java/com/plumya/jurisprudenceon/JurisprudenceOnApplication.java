@@ -8,6 +8,7 @@ import com.parse.Parse;
 import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParsePush;
+import com.parse.PushService;
 import com.parse.SaveCallback;
 
 /**
@@ -23,17 +24,18 @@ public class JurisprudenceOnApplication extends Application {
 //        Parse.enableLocalDatastore(this);
 
         Parse.initialize(this, "MQrDm7XKd6KrMwOx1m89qMNRpSDRzePGfpea1BaZ", "YEqL5U0e9mPlR2DZxph17FA42l3uhW77yiOt4eia");
+        PushService.setDefaultPushCallback(this, MainActivity.class);
         ParseInstallation.getCurrentInstallation().saveInBackground();
 
-        ParsePush.subscribeInBackground("", new SaveCallback() {
-            @Override
-            public void done(ParseException e) {
-                if (e == null) {
-                    logger.d("com.parse.push", "successfully subscribed to the broadcast channel.");
-                } else {
-                    logger.e("com.parse.push", "failed to subscribe for push", e);
-                }
-            }
-        });
+//        ParsePush.subscribeInBackground("", new SaveCallback() {
+//            @Override
+//            public void done(ParseException e) {
+//                if (e == null) {
+//                    logger.d("com.parse.push", "successfully subscribed to the broadcast channel.");
+//                } else {
+//                    logger.e("com.parse.push", "failed to subscribe for push", e);
+//                }
+//            }
+//        });
     }
 }

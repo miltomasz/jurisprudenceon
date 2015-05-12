@@ -19,7 +19,7 @@ public class PSRoomFragment extends CourtRoomFragment {
 
     @Override
     protected ParseQuery whereConditions(ParseQuery query) {
-        query.whereEqualTo("courtRoom", "IW");
+        query.whereEqualTo("courtRoom", "PS");
         return query;
     }
 }

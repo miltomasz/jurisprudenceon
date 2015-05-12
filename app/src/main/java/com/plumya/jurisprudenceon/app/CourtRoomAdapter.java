@@ -65,14 +65,13 @@ public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
         return view;
     }
 
-
     private int color(ParseObject object) {
         switch(object.getString("courtRoom")) {
             case "IC" : return R.color.colorAccent;
             case "IK" : return R.color.lightRed;
             case "IPUSiSP" : return R.color.yellow;
             case "IW" : return R.color.golden;
-            case "PS" : return R.color.colorAccent;
+            case "PS" : return R.color.accent_material_light;
             default:return Color.WHITE;
         }
     }

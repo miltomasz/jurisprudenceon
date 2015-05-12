@@ -1,5 +1,6 @@
 package com.plumya.jurisprudenceon.fragments;
 
+import android.content.Intent;
 import android.database.Cursor;
 import android.os.Bundle;
 import android.os.Handler;
@@ -10,6 +11,7 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AdapterView;
 import android.widget.ListView;
 
 import com.noveogroup.android.log.Logger;
@@ -19,6 +21,7 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
+import com.plumya.jurisprudenceon.app.JudgementActivity;
 
 import java.util.Locale;
 
@@ -28,7 +31,7 @@ import butterknife.InjectView;
 /**
  * Created by toml on 20.03.15.
  */
-public abstract class CourtRoomFragment extends Fragment {
+public abstract class CourtRoomFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final Logger logger = LoggerManager.getLogger();
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
     protected ParseQueryAdapter<ParseObject> mainAdapter;
@@ -62,6 +65,7 @@ public abstract class CourtRoomFragment extends Fragment {
         mainAdapter.setTextKey("signature");
 
         listView.setAdapter(mainAdapter);
+        listView.setOnItemClickListener(this);
         mainAdapter.loadObjects();
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
@@ -99,4 +103,18 @@ public abstract class CourtRoomFragment extends Fragment {
 
     protected abstract ParseQuery whereConditions(ParseQuery query);
 
+    @Override
+    public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+        ParseObject judgement = (ParseObject) parent.getItemAtPosition(position);
+        Intent intent = new Intent(getActivity(), JudgementActivity.class);
+        intent.putExtra("signature", judgement.getString("signature"));
+        intent.putExtra("judgement_date", judgement.getString("judgement_date"));
+        intent.putExtra("bench", judgement.getString("bench"));
+        intent.putExtra("issue", judgement.getString("issue"));
+        intent.putExtra("decision", judgement.getString("decision"));
+        intent.putExtra("justification", judgement.getString("justification"));
+        intent.putExtra("rule", judgement.getString("rule"));
+        intent.putExtra("attachement", judgement.getString("attachement"));
+        startActivity(intent);
+    }
 }
