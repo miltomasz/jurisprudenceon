@@ -30,10 +30,8 @@ import java.util.List;
  */
 public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
     private static final Logger logger = LoggerManager.getLogger();
-    final String ALL_JUDGEMENTS_LABEL = "all_judgements";
-    private static final String CREATED_AT = "Data orzeczenia: ";
-    private String[] mDataset;
 
+    private static final String CREATED_AT = "Data orzeczenia: ";
 
     public CourtRoomAdapter(Context context, ParseQueryAdapter.QueryFactory<ParseObject> factory) {
         super(context, factory);

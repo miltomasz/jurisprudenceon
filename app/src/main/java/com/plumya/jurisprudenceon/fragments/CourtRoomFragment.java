@@ -22,6 +22,9 @@ import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
 import com.plumya.jurisprudenceon.app.JudgementActivity;
+import com.plumya.jurisprudenceon.model.Judgement;
+
+import org.apache.commons.lang3.SerializationUtils;
 
 import java.util.Locale;
 
@@ -107,14 +110,7 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
     public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
         ParseObject judgement = (ParseObject) parent.getItemAtPosition(position);
         Intent intent = new Intent(getActivity(), JudgementActivity.class);
-        intent.putExtra("signature", judgement.getString("signature"));
-        intent.putExtra("judgement_date", judgement.getString("judgement_date"));
-        intent.putExtra("bench", judgement.getString("bench"));
-        intent.putExtra("issue", judgement.getString("issue"));
-        intent.putExtra("decision", judgement.getString("decision"));
-        intent.putExtra("justification", judgement.getString("justification"));
-        intent.putExtra("rule", judgement.getString("rule"));
-        intent.putExtra("attachement", judgement.getString("attachement"));
+        intent.putExtra(JudgementActivity.JUDGEMENT_DATA, new Judgement(judgement));
         startActivity(intent);
     }
 }

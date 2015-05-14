@@ -4,6 +4,7 @@ import android.app.SearchManager;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.PersistableBundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -37,6 +38,8 @@ public class MainActivity extends AppCompatActivity {
 
     private static final Logger logger = LoggerManager.getLogger();
 
+    public static final String EXTRA_POSITION = "position";
+
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
 
@@ -49,6 +52,7 @@ public class MainActivity extends AppCompatActivity {
     private ActionBarDrawerToggle mDrawerToggle;
 
     private String[] mCourtRooms;
+    private int position;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -56,7 +60,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
         ButterKnife.inject(this);
         setSupportActionBar(toolbar);
-        logger.d("MainActivity created");
+        logger.d("MainActivity created..");
 
         mCourtRooms = getResources().getStringArray(R.array.court_rooms_array);
         drawerList.setAdapter(new ArrayAdapter<String>(this, R.layout.drawer_list_item, mCourtRooms));
@@ -84,8 +88,18 @@ public class MainActivity extends AppCompatActivity {
         getSupportActionBar().setDisplayShowTitleEnabled(true);
 
         if (savedInstanceState == null) {
-            selectItem(0);
+            position = getIntent().getIntExtra(EXTRA_POSITION, 0);
+        } else {
+            position = savedInstanceState.getInt(EXTRA_POSITION);
         }
+        
+        selectItem(position);
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle outState) {
+        outState.putInt(EXTRA_POSITION, position);
+        super.onSaveInstanceState(outState);
     }
 
     @Override
@@ -113,6 +127,7 @@ public class MainActivity extends AppCompatActivity {
     private void selectItem(int position) {
         getSupportFragmentManager().beginTransaction()
                                    .replace(R.id.content_frame, fragment(position))
+                                   .addToBackStack(null)
                                    .commit();
 
         if (position > 0) {
