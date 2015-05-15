@@ -20,8 +20,11 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.fragments.AllRoomsFragment;
+import com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils;
 
 import org.apache.commons.lang3.StringUtils;
+
+import static com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils.*;
 
 import java.util.List;
 
@@ -47,8 +50,8 @@ public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
         super.getItemView(object, view, parent);
 
         TextView courtRoomLabel = (TextView) view.findViewById(R.id.courtroom_label);
-        courtRoomLabel.setBackgroundResource(color(object));
-        courtRoomLabel.setText(label(object));
+        courtRoomLabel.setBackgroundResource(color(object.getString("courtRoom")));
+        courtRoomLabel.setText(label(view.getContext(), object.getString("courtRoom")));
         // Add the title view
         TextView signature = (TextView) view.findViewById(R.id.signature);
         signature.setText(object.getString("signature"));
@@ -63,27 +66,8 @@ public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
         return view;
     }
 
-    private int color(ParseObject object) {
-        switch(object.getString("courtRoom")) {
-            case "IC" : return R.color.colorAccent;
-            case "IK" : return R.color.lightRed;
-            case "IPUSiSP" : return R.color.yellow;
-            case "IW" : return R.color.golden;
-            case "PS" : return R.color.accent_material_light;
-            default:return Color.WHITE;
-        }
-    }
-
-    private String label(ParseObject object) {
-        String[] courtRooms = getContext().getResources()
-                                        .getStringArray(R.array.court_rooms_array);
-        switch(object.getString("courtRoom")) {
-            case "IC" : return courtRooms[1];
-            case "IK" : return courtRooms[2];
-            case "IPUSiSP" : return courtRooms[3];
-            case "IW" : return courtRooms[4];
-            case "PS" : return courtRooms[5];
-            default:return courtRooms[0];
-        }
-    }
+//    @Override
+//    public View getNextPageView(View v, ViewGroup parent) {
+//        View view = super.getNextPageView(v, parent);
+//    }
 }

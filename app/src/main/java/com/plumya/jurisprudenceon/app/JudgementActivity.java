@@ -16,6 +16,11 @@ import com.plumya.jurisprudenceon.model.Judgement;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
+import org.apache.commons.lang3.StringUtils;
+
+import static com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils.color;
+import static com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils.label;
+
 
 /**
  * Created by toml on 12.05.15.
@@ -70,6 +75,15 @@ public class JudgementActivity extends AppCompatActivity {
         @InjectView(R.id.justification)
         TextView justificationTv;
 
+        @InjectView(R.id.courtroom_label)
+        TextView courtroomLabelTv;
+
+        @InjectView(R.id.rule)
+        TextView ruleTv;
+
+        @InjectView(R.id.attachement)
+        TextView attachementTv;
+
         public static PlaceholderFragment newInstance(Judgement judgement) {
             PlaceholderFragment fragment = new PlaceholderFragment();
             Bundle args = new Bundle();
@@ -89,12 +103,16 @@ public class JudgementActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.judgement_fragment, container, false);
             ButterKnife.inject(this, rootView);
+            courtroomLabelTv.setBackgroundResource(color(judgement.courtRoom));
+            courtroomLabelTv.setText(label(getActivity(), judgement.courtRoom));
             signatureTv.setText(judgement.signature);
             judgementDateTv.setText(judgement.judgementDate);
             benchTv.setText(judgement.bench);
             issueTv.setText(judgement.issue);
             decisionTv.setText(judgement.decision);
-            justificationTv.setText(judgement.justification);
+            addToView(justificationTv, judgement.justification);
+            addToView(ruleTv, judgement.rule);
+            addToView(attachementTv, judgement.attachement);
             return rootView;
         }
 
@@ -102,6 +120,13 @@ public class JudgementActivity extends AppCompatActivity {
         public void onDestroyView() {
             super.onDestroyView();
             ButterKnife.reset(this);
+        }
+
+        private void addToView(TextView tv, String judgementProperty) {
+            if (StringUtils.isNotBlank(judgementProperty)) {
+                tv.setText(judgementProperty);
+                tv.setVisibility(View.VISIBLE);
+            }
         }
     }
 }
