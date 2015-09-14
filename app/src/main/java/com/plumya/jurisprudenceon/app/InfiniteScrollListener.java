@@ -23,8 +23,8 @@ public abstract class InfiniteScrollListener implements AbsListView.OnScrollList
     }
 
     @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount)
-    {
+    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+                                                                    int totalItemCount) {
         if (totalItemCount < itemCount) {
             this.itemCount = totalItemCount;
             if (totalItemCount == 0) {

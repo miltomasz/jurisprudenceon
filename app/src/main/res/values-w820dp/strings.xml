@@ -1,4 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="app_name">Orzecznictwo SN</string>
+    <string name="open_pdf_file">Otwórz plik</string>
+    <string name="downloading_judgement">Pobieram uzasadnienie..</string>
+    <string name="judgements_folder">uzasadnienia</string>
 </resources>

@@ -34,8 +34,6 @@ import java.util.List;
 public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
     private static final Logger logger = LoggerManager.getLogger();
 
-    private static final String CREATED_AT = "Data orzeczenia: ";
-
     public CourtRoomAdapter(Context context, ParseQueryAdapter.QueryFactory<ParseObject> factory) {
         super(context, factory);
     }
@@ -58,16 +56,11 @@ public class CourtRoomAdapter extends ParseQueryAdapter<ParseObject> {
 
         // Add a reminder of how long this item has been outstanding
         TextView judgementDate = (TextView) view.findViewById(R.id.judgement_date);
-        judgementDate.setText(CREATED_AT + object.getString("judgement_date"));
+        judgementDate.setText(object.getString("judgementDate"));
 
         TextView issue = (TextView) view.findViewById(R.id.issue);
         issue.setText(StringUtils.abbreviate(object.getString("issue"), 100));
 
         return view;
     }
-
-//    @Override
-//    public View getNextPageView(View v, ViewGroup parent) {
-//        View view = super.getNextPageView(v, parent);
-//    }
 }

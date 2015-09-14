@@ -37,7 +37,6 @@
                 android:paddingTop="@dimen/judgement_activity_medium_padding">
 
                 <TextView
-                    android:text="asdfasdf"
                     android:id="@+id/judgement_date"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -46,7 +45,6 @@
                     android:gravity="left" />
 
                 <TextView
-                    android:text="dsfgsdfg"
                     android:id="@+id/bench"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
@@ -60,17 +58,25 @@
                 android:id="@+id/issue"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_body_1_material"
                 android:paddingTop="@dimen/judgement_activity_medium_padding"
+                android:textSize="@dimen/abc_text_size_body_1_material"
                 android:layout_margin="@dimen/abc_control_padding_material" />
+
+            <TextView
+                android:id="@+id/decision_init"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:textStyle="bold"
+                android:textSize="@dimen/abc_text_size_body_1_material"
+                android:paddingTop="@dimen/abc_control_padding_material" />
 
             <TextView
                 android:id="@+id/decision"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/abc_text_size_body_1_material"
-                android:textStyle="bold"
-                android:paddingTop="@dimen/abc_control_padding_material" />
+                android:paddingTop="@dimen/abc_control_padding_material"
+                android:layout_margin="@dimen/abc_control_padding_material" />
 
             <TextView
                 android:id="@+id/justification"
@@ -79,7 +85,6 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/abc_text_size_body_1_material"
                 android:paddingTop="@dimen/abc_control_padding_material"
-                android:layout_margin="@dimen/abc_control_padding_material"
                 android:textStyle="bold" />
 
             <TextView
@@ -97,6 +102,15 @@
                 android:layout_height="wrap_content"
                 android:textSize="@dimen/abc_text_size_body_1_material"
                 android:paddingTop="@dimen/abc_control_padding_material" />
+
+            <Button
+                android:id="@+id/attachementBtn"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                android:text="Uzasadnienie"
+                android:drawableLeft="@drawable/ic_file_download_black_24dp"
+                android:textSize="@dimen/abc_text_size_body_1_material" />
 
         </LinearLayout>
 

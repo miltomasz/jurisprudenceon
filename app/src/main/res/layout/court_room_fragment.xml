@@ -8,8 +8,8 @@
         android:progressDrawable="@drawable/progressbar"
         android:visibility="gone"
         android:indeterminate="true"
-        android:layout_width="50dp"
-        android:layout_height="50dp"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
         android:layout_gravity="center_vertical|center_horizontal"
         style="?android:attr/progressBarStyle" />
 

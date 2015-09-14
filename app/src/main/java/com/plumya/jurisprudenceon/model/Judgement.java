@@ -23,6 +23,8 @@ public class Judgement implements Serializable {
 
     public String issue;
 
+    public String decisionInit;
+
     public String decision;
 
     public String justification;
@@ -32,11 +34,12 @@ public class Judgement implements Serializable {
     public String attachement;
 
     public Judgement(ParseObject judgement) {
-        this.judgementDate = judgement.getString("judgement_date");
+        this.judgementDate = judgement.getString("judgementDate");
         this.bench = judgement.getString("bench");
         this.courtRoom = judgement.getString("courtRoom");
         this.signature = judgement.getString("signature");
         this.issue = judgement.getString("issue");
+        this.decisionInit = judgement.getString("decisionInit");
         this.decision = judgement.getString("decision");
         this.justification = judgement.getString("justification");
         this.rule = judgement.getString("rule");

@@ -23,15 +23,12 @@ import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.app.CourtRoomAdapter;
-import com.plumya.jurisprudenceon.app.InfiniteScrollListener;
 import com.plumya.jurisprudenceon.app.JudgementActivity;
+import com.plumya.jurisprudenceon.listeners.CourtRoomsOnQueryLoadListener;
+import com.plumya.jurisprudenceon.listeners.CourtRoomsOnScrollListener;
 import com.plumya.jurisprudenceon.model.Judgement;
 
-import org.apache.commons.lang3.SerializationUtils;
-
-import java.util.HashMap;
 import java.util.List;
-import java.util.Locale;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;
@@ -42,28 +39,26 @@ import butterknife.InjectView;
 public abstract class CourtRoomFragment extends Fragment implements AdapterView.OnItemClickListener {
     private static final Logger logger = LoggerManager.getLogger();
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
-    protected ParseQueryAdapter<ParseObject> mainAdapter;
-    private String courtRoom;
-    private int courtRoomNumber;
+//    private String courtRoom;
+//    private int courtRoomNumber;
+    private CourtRoomsOnQueryLoadListener onQueryLoadlistener;
 
-    protected ListView listView;
+    protected ParseQueryAdapter<ParseObject> mainAdapter;
+
+    @InjectView(R.id.judgement_list)
+    ListView listView;
 
     @InjectView(R.id.swipe_refresh_layout)
     SwipeRefreshLayout swipeRefreshLayout;
 
     @InjectView(R.id.marker_progress)
     ProgressBar markerProgress;
-    private CourRoomsOnQueryLoadListener listener;
-
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        courtRoomNumber = getArguments().getInt(ARG_COURT_ROOM_NUMBER);
-        courtRoom = getResources().getStringArray(R.array.court_rooms_array)[courtRoomNumber];
-        int imageId = getResources().getIdentifier(courtRoom.toLowerCase(Locale.getDefault()),
-                "drawable", getActivity().getPackageName());
-
+//        courtRoomNumber = getArguments().getInt(ARG_COURT_ROOM_NUMBER);
+//        courtRoom = getResources().getStringArray(R.array.court_rooms_array)[courtRoomNumber];
     }
 
     @Override
@@ -71,21 +66,15 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
                              Bundle savedInstanceState) {
         View rootView = inflater.inflate(R.layout.court_room_fragment, container, false);
         ButterKnife.inject(this, rootView);
-
-        listView = (ListView) rootView.findViewById(R.id.judgement_list);
-        // Initialize main ParseQueryAdapter
         mainAdapter = new CourtRoomAdapter(getActivity(), factory());
-//        mainAdapter.setTextKey("signature");
-
         // Perhaps set a callback to be fired upon successful loading of a new set of ParseObjects.
-        listener = new CourRoomsOnQueryLoadListener(markerProgress);
-        mainAdapter.addOnQueryLoadListener(listener);
-        mainAdapter.setObjectsPerPage(6);
+        onQueryLoadlistener = new CourtRoomsOnQueryLoadListener(markerProgress);
+        mainAdapter.addOnQueryLoadListener(onQueryLoadlistener);
+        mainAdapter.setObjectsPerPage(5);
 
-        listView.setOnScrollListener(new CourRoomsOnScrollListener(mainAdapter));
-        listView.setAdapter(mainAdapter);
+        listView.setOnScrollListener(new CourtRoomsOnScrollListener(mainAdapter));
         listView.setOnItemClickListener(this);
-//        mainAdapter.loadObjects();
+        listView.setAdapter(mainAdapter);
 
         swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
             @Override
@@ -97,62 +86,16 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
                 new Handler().postDelayed(new Runnable() {
                     @Override
                     public void run() {
-                        mainAdapter.removeOnQueryLoadListener(listener);
+                        mainAdapter.removeOnQueryLoadListener(onQueryLoadlistener);
                         mainAdapter.loadObjects();
                         swipeRefreshLayout.setRefreshing(false);
-                        mainAdapter.addOnQueryLoadListener(listener);
+                        mainAdapter.addOnQueryLoadListener(onQueryLoadlistener);
                     }
                 }, 1000);
             }
         });
         return rootView;
     }
-
-    private static class CourRoomsOnQueryLoadListener implements ParseQueryAdapter.OnQueryLoadListener<ParseObject> {
-
-        private ProgressBar progressBar;
-
-        public CourRoomsOnQueryLoadListener(ProgressBar progressBar) {
-            this.progressBar = progressBar;
-        }
-
-        @Override
-        public void onLoading() {
-            progressBar.setVisibility(View.VISIBLE);
-        }
-
-        @Override
-        public void onLoaded(List<ParseObject> list, Exception e) {
-            progressBar.setVisibility(View.GONE);
-        }
-    }
-
-    private static class CourRoomsOnScrollListener implements AbsListView.OnScrollListener {
-
-        private ParseQueryAdapter adapter;
-        private int preLast = 0;
-
-        public CourRoomsOnScrollListener(ParseQueryAdapter adapter) {
-
-            this.adapter = adapter;
-        }
-        @Override
-        public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-        }
-
-        @Override
-        public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount, int totalItemCount) {
-            final int lastItem = firstVisibleItem + visibleItemCount;
-            if (lastItem == totalItemCount) {
-                if (preLast != lastItem) { //this avoid multiple calls for the last item
-                    preLast = lastItem;
-                    adapter.loadNextPage();
-                }
-            }
-        }
-    }
-
 
     public RecyclerView.Adapter getAdapter(Cursor cursor) {
         return null;
@@ -163,7 +106,7 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
             public ParseQuery create() {
                 ParseQuery query = ParseQuery.getQuery("Judgement");
                 query = whereConditions(query);
-//                query.setLimit(6);
+                query.orderByDescending("date");
                 return query;
             }
         };
