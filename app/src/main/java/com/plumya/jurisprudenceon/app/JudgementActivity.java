@@ -1,10 +1,6 @@
 package com.plumya.jurisprudenceon.app;
 
-import android.app.Activity;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.os.Bundle;
-import android.os.Environment;
 import android.support.v4.app.Fragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -23,8 +19,6 @@ import com.plumya.jurisprudenceon.utils.DownloadPdfTask;
 import butterknife.ButterKnife;
 import butterknife.InjectView;
 import org.apache.commons.lang3.StringUtils;
-
-import java.io.File;
 
 import static com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils.color;
 import static com.plumya.jurisprudenceon.utils.JurisprudenceOnUtils.label;
@@ -63,7 +57,12 @@ public class JudgementActivity extends AppCompatActivity {
 
     public static class PlaceholderFragment extends Fragment implements View.OnClickListener{
 
+        public static final String PDF = "pdf";
+        public static final String PREFIX = "/sprawy";
+        public static final String HTTP_PREFIX = "http://";
         private Judgement judgement;
+        private String decisionUrl;
+        private String issueUrl;
 
         @InjectView(R.id.signature)
         TextView signatureTv;
@@ -83,22 +82,20 @@ public class JudgementActivity extends AppCompatActivity {
         @InjectView(R.id.decision)
         TextView decisionTv;
 
-        @InjectView(R.id.justification)
-        TextView justificationTv;
-
         @InjectView(R.id.courtroom_label)
         TextView courtroomLabelTv;
 
-        @InjectView(R.id.rule)
-        TextView ruleTv;
+        @InjectView((R.id.decisionBtn))
+        Button decisionBtn;
 
-        @InjectView(R.id.attachement)
-        TextView attachementTv;
+        @InjectView(R.id.decisionPdfLayout)
+        View decisionPdfLayout;
 
-        @InjectView(R.id.attachementBtn)
-        Button attachementBtn;
+        @InjectView(R.id.issueBtn)
+        Button issueBtn;
 
-        String judgementUrl;
+        @InjectView(R.id.issuePdfLayout)
+        View issuePdfLayout;
 
         public static PlaceholderFragment newInstance(Judgement judgement) {
             PlaceholderFragment fragment = new PlaceholderFragment();
@@ -111,13 +108,21 @@ public class JudgementActivity extends AppCompatActivity {
         @Override
         public void onClick(View view) {
             switch(view.getId()) {
-                case R.id.attachementBtn: {
-                    String fileUrl = String.format("http://www.sn.pl%s", judgementUrl);
-                    new DownloadPdfTask(getActivity(), fileUrl).execute();
+                case R.id.decisionBtn: {
+                    openPdf(decisionUrl);
+                    break;
+                }
+                case R.id.issueBtn: {
+                    openPdf(issueUrl);
                     break;
                 }
                 default: break;
             }
+        }
+
+        private void openPdf(String url) {
+            String fileUrl = String.format("http://www.sn.pl%s", url);
+            new DownloadPdfTask(getActivity(), fileUrl).execute();
         }
 
         @Override
@@ -131,7 +136,8 @@ public class JudgementActivity extends AppCompatActivity {
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.judgement_fragment, container, false);
             ButterKnife.inject(this, rootView);
-            attachementBtn.setOnClickListener(this);
+            decisionBtn.setOnClickListener(this);
+            issueBtn.setOnClickListener(this);
             courtroomLabelTv.setBackgroundResource(color(judgement.courtRoom));
             courtroomLabelTv.setText(label(getActivity(), judgement.courtRoom));
             signatureTv.setText(judgement.signature);
@@ -139,13 +145,25 @@ public class JudgementActivity extends AppCompatActivity {
             benchTv.setText(judgement.bench);
             issueTv.setText(judgement.issue);
             decisionInitTv.setText(judgement.decisionInit);
-            decisionTv.setText(Html.fromHtml(judgement.decision));
-            addToView(justificationTv, judgement.justification);
-            addToView(ruleTv, judgement.rule);
-            addToView(attachementTv, judgement.attachement);
-            if (StringUtils.isNotEmpty(judgement.justification)) {
-                this.judgementUrl = judgement.justification;
-                attachementBtn.setVisibility(View.VISIBLE);
+            if (StringUtils.isNotBlank(judgement.decision)) {
+                decisionTv.setText(Html.fromHtml(judgement.decision));
+            }
+            if (StringUtils.isNotBlank(judgement.decisionUrl)) {
+                if (judgement.decisionUrl.startsWith(PREFIX) && judgement.decisionUrl.endsWith(PDF)) {
+                    this.decisionUrl = judgement.decisionUrl;
+                    decisionPdfLayout.setVisibility(View.VISIBLE);
+                    decisionBtn.setText(judgement.decisionUrlLabel);
+                }
+                if (judgement.decisionUrl.startsWith(HTTP_PREFIX)) {
+                    // start web view
+                }
+            }
+            if (StringUtils.isNotBlank(judgement.issueUrl)) {
+                if (judgement.issueUrl.startsWith(PREFIX) && judgement.issueUrl.endsWith(PDF)) {
+                    this.issueUrl = judgement.issueUrl;
+                    issuePdfLayout.setVisibility(View.VISIBLE);
+                    issueBtn.setText(judgement.issueUrlLabel);
+                }
             }
             return rootView;
         }

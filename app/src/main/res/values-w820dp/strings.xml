@@ -4,4 +4,7 @@
     <string name="open_pdf_file">Otwórz plik</string>
     <string name="downloading_judgement">Pobieram uzasadnienie..</string>
     <string name="judgements_folder">uzasadnienia</string>
+    <string name="preference_name">JurisprudencePref</string>
+    <string name="legal_declaration_text">Medium Text bla bla bla</string>
+    <string name="declaration_accepted">DECLARATION_ACCEPTED</string>
 </resources>

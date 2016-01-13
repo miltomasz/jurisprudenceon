@@ -1,7 +1,12 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto" >
-    <item android:id="@+id/action_websearch"
-        android:icon="@mipmap/action_search"
-        android:title="@string/action_websearch"
+    <!--<item android:id="@+id/action_websearch"-->
+        <!--android:icon="@mipmap/action_search"-->
+        <!--android:title="@string/action_websearch"-->
+        <!--app:showAsAction="ifRoom|withText" />-->
+
+    <item android:id="@+id/action_settings"
+        android:icon="@drawable/ic_settings_white_24dp"
+        android:title="@string/action_settings"
         app:showAsAction="ifRoom|withText" />
 </menu>

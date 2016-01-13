@@ -11,6 +11,7 @@ import android.os.AsyncTask;
 import android.os.Environment;
 import android.util.Log;
 import android.webkit.MimeTypeMap;
+import android.widget.Toast;
 
 import com.plumya.jurisprudenceon.R;
 
@@ -78,28 +79,25 @@ public class DownloadPdfTask extends AsyncTask<String, Void, String> {
         Uri path = Uri.fromFile(pdfFile);
         Log.v(TAG, "Uri to downloaded pdf file: " + path);
 
-        Intent intent = new Intent(Intent.ACTION_VIEW);
-        intent.putExtra(Intent.EXTRA_STREAM, path);
-        intent.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
-        String fileExtension = MimeTypeMap.getFileExtensionFromUrl(fileUrl);
-        String mimeType = MimeTypeMap.getSingleton().getMimeTypeFromExtension(fileExtension);
-        intent.setType(mimeType);
-        intent.setData(path);
+        Intent target = new Intent(Intent.ACTION_VIEW);
+        target.setDataAndType(Uri.fromFile(pdfFile),"application/pdf");
+        target.setFlags(Intent.FLAG_ACTIVITY_NO_HISTORY);
 
-        givePermissionToOpenPdfToAllApps(path, intent);
+        Intent chooser = Intent.createChooser(target, mActivity.getString(R.string.open_pdf_file));
 
-        Intent chooser = Intent.createChooser(intent, mActivity.getString(R.string.open_pdf_file));
         try {
             mActivity.startActivity(chooser);
         } catch (ActivityNotFoundException e) {
-            Log.v(TAG, "No application to open the file: " + e.getMessage());
+            // Instruct the user to install a PDF reader here, or something
+            Log.d(TAG, "No app can perform the action");
+            Toast.makeText(mActivity, R.string.app_not_available, Toast.LENGTH_LONG).show();
         }
     }
 
     private void givePermissionToOpenPdfToAllApps(Uri path, Intent intent) {
         PackageManager pm = mActivity.getPackageManager();
         // Give permissions to the file to each external app that can open the file
-        List<ResolveInfo> activities = pm.queryIntentActivities(intent, 0);
+        List<ResolveInfo> activities = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
         for (ResolveInfo externalApp: activities){
             String packageName = externalApp.activityInfo.packageName;
             mActivity.grantUriPermission(packageName, path, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);

@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.os.PersistableBundle;
+import android.preference.PreferenceManager;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
@@ -23,6 +24,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
 import com.parse.PushService;
+import com.plumya.jurisprudenceon.app.SettingsActivity;
 import com.plumya.jurisprudenceon.fragments.AllRoomsFragment;
 import com.plumya.jurisprudenceon.fragments.ICRoomFragment;
 import com.plumya.jurisprudenceon.fragments.IKCourtRoomFragment;
@@ -37,9 +39,9 @@ import butterknife.InjectView;
 
 public class MainActivity extends AppCompatActivity {
 
-    private static final Logger logger = LoggerManager.getLogger();
-
     public static final String EXTRA_POSITION = "position";
+    public static final String NOTIFICATION_POSITION = "notification_position";
+    private static final Logger logger = LoggerManager.getLogger();
 
     @InjectView(R.id.toolbar)
     Toolbar toolbar;
@@ -93,8 +95,23 @@ public class MainActivity extends AppCompatActivity {
         } else {
             position = savedInstanceState.getInt(EXTRA_POSITION);
         }
-        
+
         selectItem(position);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        position = getIntent().getIntExtra(NOTIFICATION_POSITION, 0);
+        if (position != 0) {
+            selectItem(position);
+        }
+    }
+
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        setIntent(intent);
     }
 
     @Override
@@ -120,7 +137,8 @@ public class MainActivity extends AppCompatActivity {
     public boolean onPrepareOptionsMenu(Menu menu) {
         // If the nav drawer is open, hide action items related to the content view
         boolean drawerOpen = drawer.isDrawerOpen(drawerList);
-        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+//        menu.findItem(R.id.action_websearch).setVisible(!drawerOpen);
+        menu.findItem(R.id.action_settings).setVisible(!drawerOpen);
         return super.onPrepareOptionsMenu(menu);
     }
 
@@ -174,16 +192,21 @@ public class MainActivity extends AppCompatActivity {
         }
         // Handle action buttons
         switch(item.getItemId()) {
-            case R.id.action_websearch:
-                // create intent to perform web search for this planet
-                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
-                intent.putExtra(SearchManager.QUERY, getSupportActionBar().getTitle());
-                // catch event that there's no activity to handle intent
-                if (intent.resolveActivity(getPackageManager()) != null) {
-                    startActivity(intent);
-                } else {
-                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
-                }
+//            case R.id.action_websearch: {
+//                // create intent to perform web search for this planet
+//                Intent intent = new Intent(Intent.ACTION_WEB_SEARCH);
+//                intent.putExtra(SearchManager.QUERY, getSupportActionBar().getTitle());
+//                // catch event that there's no activity to handle intent
+//                if (intent.resolveActivity(getPackageManager()) != null) {
+//                    startActivity(intent);
+//                } else {
+//                    Toast.makeText(this, R.string.app_not_available, Toast.LENGTH_LONG).show();
+//                }
+//                return true;
+//            }
+            case R.id.action_settings:
+                Intent intent = new Intent(this, SettingsActivity.class);
+                startActivity(intent);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);

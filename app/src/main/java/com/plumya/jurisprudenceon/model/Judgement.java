@@ -12,26 +12,17 @@ import java.util.Date;
 public class Judgement implements Serializable {
 
     public int judgementId;
-
     public String bench;
-
     public String courtRoom;
-
     public String signature;
-
     public String judgementDate;
-
     public String issue;
-
+    public String issueUrl;
+    public String issueUrlLabel;
     public String decisionInit;
-
     public String decision;
-
-    public String justification;
-
-    public String rule;
-
-    public String attachement;
+    public String decisionUrl;
+    public String decisionUrlLabel;
 
     public Judgement(ParseObject judgement) {
         this.judgementDate = judgement.getString("judgementDate");
@@ -39,10 +30,11 @@ public class Judgement implements Serializable {
         this.courtRoom = judgement.getString("courtRoom");
         this.signature = judgement.getString("signature");
         this.issue = judgement.getString("issue");
+        this.issueUrl = judgement.getString("issueUrl");
+        this.issueUrlLabel = judgement.getString("issueUrlLabel");
         this.decisionInit = judgement.getString("decisionInit");
         this.decision = judgement.getString("decision");
-        this.justification = judgement.getString("justification");
-        this.rule = judgement.getString("rule");
-        this.attachement = judgement.getString("attachement");
+        this.decisionUrl = judgement.getString("decisionUrl");
+        this.decisionUrlLabel = judgement.getString("decisionUrlLabel");
     }
 }

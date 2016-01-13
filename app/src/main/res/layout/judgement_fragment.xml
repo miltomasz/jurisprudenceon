@@ -78,40 +78,37 @@
                 android:paddingTop="@dimen/abc_control_padding_material"
                 android:layout_margin="@dimen/abc_control_padding_material" />
 
-            <TextView
-                android:id="@+id/justification"
-                android:visibility="gone"
-                android:layout_width="match_parent"
+            <LinearLayout android:id="@+id/decisionPdfLayout"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_body_1_material"
-                android:paddingTop="@dimen/abc_control_padding_material"
-                android:textStyle="bold" />
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/rule"
-                android:visibility="gone"
-                android:layout_width="match_parent"
+                <Button
+                    android:id="@+id/decisionBtn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_pdf_64"
+                    android:textSize="@dimen/abc_text_size_body_1_material"
+                    android:gravity="center_vertical|left" />
+
+            </LinearLayout>
+
+            <LinearLayout android:id="@+id/issuePdfLayout"
+                android:layout_width="fill_parent"
                 android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_body_1_material"
-                android:paddingTop="@dimen/abc_control_padding_material" />
+                android:orientation="horizontal"
+                android:visibility="gone">
 
-            <TextView
-                android:id="@+id/attachement"
-                android:visibility="gone"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:textSize="@dimen/abc_text_size_body_1_material"
-                android:paddingTop="@dimen/abc_control_padding_material" />
+                <Button
+                    android:id="@+id/issueBtn"
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content"
+                    android:drawableLeft="@drawable/ic_pdf_64"
+                    android:textSize="@dimen/abc_text_size_body_1_material"
+                    android:gravity="center_vertical|left" />
 
-            <Button
-                android:id="@+id/attachementBtn"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:visibility="gone"
-                android:text="Uzasadnienie"
-                android:drawableLeft="@drawable/ic_file_download_black_24dp"
-                android:textSize="@dimen/abc_text_size_body_1_material" />
-
+            </LinearLayout>
         </LinearLayout>
 
     </LinearLayout>
