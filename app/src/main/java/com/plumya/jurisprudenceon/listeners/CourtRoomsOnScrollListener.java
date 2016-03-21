@@ -1,7 +1,9 @@
 package com.plumya.jurisprudenceon.listeners;
 
+import android.util.Log;
 import android.widget.AbsListView;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParseQueryAdapter;
 
 /**
@@ -9,11 +11,12 @@ import com.parse.ParseQueryAdapter;
  */
 public class CourtRoomsOnScrollListener implements AbsListView.OnScrollListener {
 
-    private ParseQueryAdapter adapter;
+    private static final String TAG = CourtRoomsOnScrollListener.class.getSimpleName();
+    private ParseQueryAdapter mParseQueryAdapter;
     private int preLast = 0;
 
     public CourtRoomsOnScrollListener(ParseQueryAdapter adapter) {
-        this.adapter = adapter;
+        this.mParseQueryAdapter = adapter;
     }
 
     @Override
@@ -25,7 +28,13 @@ public class CourtRoomsOnScrollListener implements AbsListView.OnScrollListener 
         if (lastItem == totalItemCount) {
             if (preLast != lastItem) { //this avoid multiple calls for the last item
                 preLast = lastItem;
-                adapter.loadNextPage();
+                try {
+                    mParseQueryAdapter.loadNextPage();
+                } catch (IndexOutOfBoundsException iobe) {
+                    Crashlytics.logException(iobe);
+                    Log.d(TAG, "Exception at loading next page: " + iobe.getMessage());
+                    // Stop loading next records
+                }
             }
         }
     }

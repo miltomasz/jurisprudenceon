@@ -5,7 +5,6 @@
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE"></uses-permission>
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE"></uses-permission>
-    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE"></uses-permission>
     <uses-permission android:name="android.permission.READ_PHONE_STATE"></uses-permission>
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
     <uses-permission android:name="android.permission.WAKE_LOCK" />
@@ -51,6 +50,16 @@
 
         <activity
             android:name=".app.SettingsActivity"
+            android:parentActivityName=".MainActivity"
+            android:label="@string/app_name" >
+            <intent-filter>
+                <action android:name=".app.JudgementActivity" />
+                <category android:name="android.intent.category.DEFAULT" />
+            </intent-filter>
+        </activity>
+
+        <activity
+            android:name=".app.InfoActivity"
             android:parentActivityName=".MainActivity"
             android:label="@string/app_name" >
             <intent-filter>
@@ -107,6 +116,9 @@
                 <category android:name="com.plumya.jurisprudenceon" />
             </intent-filter>
         </receiver>
+        <meta-data
+            android:name="io.fabric.ApiKey"
+            android:value="079d98fea1a20f6d8bc53278137b25d67fc68cdf" />
     </application>
 
 </manifest>

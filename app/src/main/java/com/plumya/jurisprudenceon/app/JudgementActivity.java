@@ -11,10 +11,12 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.plumya.jurisprudenceon.R;
 import com.plumya.jurisprudenceon.model.Judgement;
 import com.plumya.jurisprudenceon.utils.DownloadPdfTask;
+import com.plumya.jurisprudenceon.utils.Utility;
 
 import butterknife.ButterKnife;
 import butterknife.InjectView;

@@ -11,13 +11,10 @@ import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.AbsListView;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 
-import com.noveogroup.android.log.Logger;
-import com.noveogroup.android.log.LoggerManager;
 import com.parse.ParseObject;
 import com.parse.ParseQuery;
 import com.parse.ParseQueryAdapter;
@@ -27,6 +24,7 @@ import com.plumya.jurisprudenceon.app.JudgementActivity;
 import com.plumya.jurisprudenceon.listeners.CourtRoomsOnQueryLoadListener;
 import com.plumya.jurisprudenceon.listeners.CourtRoomsOnScrollListener;
 import com.plumya.jurisprudenceon.model.Judgement;
+import com.plumya.jurisprudenceon.utils.Utility;
 
 import java.util.List;
 
@@ -37,13 +35,9 @@ import butterknife.InjectView;
  * Created by toml on 20.03.15.
  */
 public abstract class CourtRoomFragment extends Fragment implements AdapterView.OnItemClickListener {
-    private static final Logger logger = LoggerManager.getLogger();
     public static final String ARG_COURT_ROOM_NUMBER = "court_room_number";
-//    private String courtRoom;
-//    private int courtRoomNumber;
-    private CourtRoomsOnQueryLoadListener onQueryLoadlistener;
-
     protected ParseQueryAdapter<ParseObject> mainAdapter;
+    private CourtRoomsOnQueryLoadListener onQueryLoadlistener;
 
     @InjectView(R.id.judgement_list)
     ListView listView;
@@ -54,12 +48,42 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
     @InjectView(R.id.marker_progress)
     ProgressBar markerProgress;
 
-    @Override
-    public void onCreate(@Nullable Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-//        courtRoomNumber = getArguments().getInt(ARG_COURT_ROOM_NUMBER);
-//        courtRoom = getResources().getStringArray(R.array.court_rooms_array)[courtRoomNumber];
-    }
+    @InjectView((R.id.list_empty))
+    View mEmptyLinearLayout;
+
+    private OnJudgementLoadedListener mOnJudgementLoadedListener = new OnJudgementLoadedListener() {
+        @Override
+        public void loaded(List<ParseObject> objectsLoaded) {
+            if (objectsLoaded == null) {
+                listView.setVisibility(View.INVISIBLE);
+                mEmptyLinearLayout.setVisibility(View.VISIBLE);
+            } else {
+                listView.setVisibility(View.VISIBLE);
+                mEmptyLinearLayout.setVisibility(View.GONE);
+            }
+        }
+    };
+
+    protected SwipeRefreshLayout.OnRefreshListener mOnRefreshListener = new SwipeRefreshLayout.OnRefreshListener() {
+        @Override
+        public void onRefresh() {
+            refreshContent();
+        }
+
+        private void refreshContent() {
+            new Handler().postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mainAdapter.removeOnQueryLoadListener(onQueryLoadlistener);
+                    mainAdapter.loadObjects();
+                    if (Utility.isNetworkConnected(getActivity())) {
+                        swipeRefreshLayout.setRefreshing(false);
+                    }
+                    mainAdapter.addOnQueryLoadListener(onQueryLoadlistener);
+                }
+            }, 1000);
+        }
+    };
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -68,33 +92,22 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
         ButterKnife.inject(this, rootView);
         mainAdapter = new CourtRoomAdapter(getActivity(), factory());
         // Perhaps set a callback to be fired upon successful loading of a new set of ParseObjects.
-        onQueryLoadlistener = new CourtRoomsOnQueryLoadListener(markerProgress);
+
+        onQueryLoadlistener = new CourtRoomsOnQueryLoadListener(markerProgress, swipeRefreshLayout,
+                mOnJudgementLoadedListener);
         mainAdapter.addOnQueryLoadListener(onQueryLoadlistener);
         mainAdapter.setObjectsPerPage(5);
-
         listView.setOnScrollListener(new CourtRoomsOnScrollListener(mainAdapter));
         listView.setOnItemClickListener(this);
         listView.setAdapter(mainAdapter);
-
-        swipeRefreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
-            @Override
-            public void onRefresh() {
-                refreshContent();
-            }
-
-            private void refreshContent() {
-                new Handler().postDelayed(new Runnable() {
-                    @Override
-                    public void run() {
-                        mainAdapter.removeOnQueryLoadListener(onQueryLoadlistener);
-                        mainAdapter.loadObjects();
-                        swipeRefreshLayout.setRefreshing(false);
-                        mainAdapter.addOnQueryLoadListener(onQueryLoadlistener);
-                    }
-                }, 1000);
-            }
-        });
+        swipeRefreshLayout.setOnRefreshListener(mOnRefreshListener);
         return rootView;
+    }
+
+    @Override
+    public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
+        super.onViewCreated(view, savedInstanceState);
+
     }
 
     public RecyclerView.Adapter getAdapter(Cursor cursor) {
@@ -120,5 +133,9 @@ public abstract class CourtRoomFragment extends Fragment implements AdapterView.
         Intent intent = new Intent(getActivity(), JudgementActivity.class);
         intent.putExtra(JudgementActivity.JUDGEMENT_DATA, new Judgement(judgement));
         startActivity(intent);
+    }
+
+    public interface OnJudgementLoadedListener {
+        void loaded(List<ParseObject> objectsLoaded);
     }
 }

@@ -7,4 +7,12 @@
     <string name="preference_name">JurisprudencePref</string>
     <string name="legal_declaration_text">Medium Text bla bla bla</string>
     <string name="declaration_accepted">DECLARATION_ACCEPTED</string>
+    <string name="action_about">O aplikacji</string>
+    <string name="about_app">Aplikacja Orzecznictwo SN wysyła powiadomienia o nowych orzeczeniach Sądu Najwyższego.\n\nOrzeczenia można filtrować po poszczególnych izbach SN.\n\nAplikacja umożliwia przeglądanie postanowień, uchwał i uzasadnień wyroków po uprzednim
+    ściągnięciu pliku PDF na telefon (jeśli plik PDF jest dostępny).\n\nW Ustawieniach aplikacji można włączyć/wyłączyć otrzymywanie powiadomień o nowych orzeczeniach. </string>
+    <string name="contact_email">E-mail: kontakt.orzecznictwo.sn@gmail.com</string>
+    <string name="contact_web">Internet: plumya.com</string>
+    <string name="contact_string">Kontakt</string>
+    <string name="no_internet_connection_msg">Sprawdź połączenie z internetem!</string>
+    <string name="check_internet_connection">Proszę sprawdzić połączenie z internetem!</string>
 </resources>

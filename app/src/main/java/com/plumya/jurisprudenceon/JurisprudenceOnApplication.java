@@ -6,6 +6,7 @@ import android.content.SharedPreferences;
 import android.preference.PreferenceManager;
 import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
 import com.parse.Parse;
@@ -18,17 +19,19 @@ import com.parse.SaveCallback;
 import com.plumya.jurisprudenceon.app.SettingsActivity;
 
 import bolts.Task;
+import io.fabric.sdk.android.Fabric;
 
 /**
  * Created by toml on 24.03.15.
  */
 public class JurisprudenceOnApplication extends Application {
     public static final String CHANNELS = "channels";
-    private static final Logger logger = LoggerManager.getLogger();
+    public static final String JURISPRUDENCE_APP = "Orzecznictwo SN";
 
     @Override
     public void onCreate() {
         super.onCreate();
+        Fabric.with(this, new Crashlytics());
         Parse.initialize(this, "MQrDm7XKd6KrMwOx1m89qMNRpSDRzePGfpea1BaZ", "YEqL5U0e9mPlR2DZxph17FA42l3uhW77yiOt4eia");
         final ParseInstallation currentInstallation = ParseInstallation.getCurrentInstallation();
         Task<ParseObject> fetchedInstallation = currentInstallation.fetchIfNeededInBackground();

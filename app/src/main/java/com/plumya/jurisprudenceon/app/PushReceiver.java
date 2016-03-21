@@ -41,7 +41,7 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
                         notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
                 .setSmallIcon(R.mipmap.ic_launcher)
-                .setContentTitle("Orzecznictwo SN")
+                .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setContentText(readableNotificationMessage)
                 .build();

@@ -13,10 +13,15 @@ import android.util.Log;
 import android.webkit.MimeTypeMap;
 import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseInstallation;
 import com.plumya.jurisprudenceon.R;
+
+import org.apache.commons.lang3.StringUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.SocketTimeoutException;
 import java.net.URL;
 import java.util.List;
 
@@ -26,6 +31,7 @@ import java.util.List;
 public class DownloadPdfTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = DownloadPdfTask.class.getSimpleName();
+    public static final String EMPTY_STRING = "";
     private Activity mActivity;
     private String mFileUrl;
     private File mPdfFile;
@@ -61,12 +67,22 @@ public class DownloadPdfTask extends AsyncTask<String, Void, String> {
         if (!mPdfFile.exists()) {
             try {
                 mPdfFile.createNewFile();
-            } catch (IOException e){
-                e.printStackTrace();
+                PdfDownloader.downloadFile(mFileUrl, mPdfFile);
+                return mPdfFile.getAbsolutePath();
+            } catch (IOException e) {
+                String objectId = ParseInstallation.getCurrentInstallation().getObjectId();
+                Crashlytics.logException(e);
+                Crashlytics.log(Log.ERROR, TAG,
+                        "Exception occurred while downloading file: " + mFileUrl +
+                                ", for objectId: " + objectId);
+                if (mPdfFile.exists()) {
+                    mPdfFile.delete();
+                }
             }
-            PdfDownloader.downloadFile(mFileUrl, mPdfFile);
+        } else {
+            return mPdfFile.getAbsolutePath();
         }
-        return mPdfFile.getAbsolutePath();
+        return EMPTY_STRING;
     }
 
     @Override
@@ -74,6 +90,11 @@ public class DownloadPdfTask extends AsyncTask<String, Void, String> {
         super.onPostExecute(fileUrl);
         if (mProgressDialog.isShowing()) {
             mProgressDialog.dismiss();
+        }
+        if (StringUtils.isEmpty(fileUrl)) {
+            Toast.makeText(mActivity, mActivity.getString(R.string.check_internet_connection),
+                    Toast.LENGTH_LONG).show();
+            return;
         }
         File pdfFile = new File(fileUrl);
         Uri path = Uri.fromFile(pdfFile);

@@ -13,13 +13,19 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.app.AppCompatDelegate;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.crashlytics.android.Crashlytics;
+import com.parse.ParseException;
 import com.parse.ParseInstallation;
 import com.parse.ParseObject;
 import com.parse.ParsePush;
 import com.parse.ParseQuery;
 import com.parse.PushService;
+import com.parse.SaveCallback;
+import com.plumya.jurisprudenceon.JurisprudenceOnApplication;
 import com.plumya.jurisprudenceon.R;
+import com.plumya.jurisprudenceon.utils.Utility;
 
 import java.util.prefs.PreferenceChangeListener;
 
@@ -62,6 +68,7 @@ public class SettingsActivity extends AppCompatActivity {
                                     implements Preference.OnPreferenceChangeListener {
 
         public static final String NOTIFICATION_TOGGLE_KEY = "notificationToggle";
+        public static final String SN = "sn";
         private final String TAG = SettingsFragment.class.getSimpleName();
         private SharedPreferences mPrefs;
 
@@ -77,14 +84,45 @@ public class SettingsActivity extends AppCompatActivity {
 
         @Override
         public boolean onPreferenceChange(Preference preference, Object newValue) {
-            SharedPreferences.Editor editor = mPrefs.edit();
+            final SharedPreferences.Editor editor = mPrefs.edit();
             if (NOTIFICATION_TOGGLE_KEY.equals(preference.getKey())) {
-                Boolean prefValue = (Boolean) newValue;
-                editor.putBoolean(NOTIFICATION_TOGGLE_KEY, prefValue).commit();
+                final Boolean prefValue = (Boolean) newValue;
+                String action = prefValue ? "włączyć" : "wyłączyć";
+                if (!Utility.isNetworkConnected(getActivity())) {
+                    Toast.makeText(getActivity(),
+                            "Nie można " + action + " powiadomień. Proszę sprawdzić połączenie z internetem!",
+                            Toast.LENGTH_LONG).show();
+                    return false;
+                }
+                final String objectId = ParseInstallation.getCurrentInstallation().getObjectId();
                 if (prefValue) {
-                    ParsePush.subscribeInBackground("sn");
+                    ParsePush.subscribeInBackground(SN, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                editor.putBoolean(NOTIFICATION_TOGGLE_KEY, prefValue).commit();
+                            } else {
+                                Crashlytics.log(Log.ERROR, JurisprudenceOnApplication.JURISPRUDENCE_APP,
+                                        "Exception while subscribing in for user: " + objectId + ", exception: " + e.getMessage());
+                                Toast.makeText(getActivity(),
+                                        getString(R.string.check_internet_connection), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 } else {
-                    ParsePush.unsubscribeInBackground("sn");
+                    ParsePush.unsubscribeInBackground(SN, new SaveCallback() {
+                        @Override
+                        public void done(ParseException e) {
+                            if (e == null) {
+                                editor.putBoolean(NOTIFICATION_TOGGLE_KEY, prefValue).commit();
+                            } else {
+                                Crashlytics.log(Log.ERROR, JurisprudenceOnApplication.JURISPRUDENCE_APP,
+                                        "Exception while unsubscribing for user: " + objectId + ", exception: " + e.getMessage());
+                                Toast.makeText(getActivity(),
+                                        getString(R.string.check_internet_connection), Toast.LENGTH_LONG).show();
+                            }
+                        }
+                    });
                 }
                 Log.v(TAG, "Enable notification? " + prefValue);
             }

@@ -24,6 +24,7 @@ import com.github.rahatarmanahmed.cpv.CircularProgressView;
 import com.noveogroup.android.log.Logger;
 import com.noveogroup.android.log.LoggerManager;
 import com.parse.PushService;
+import com.plumya.jurisprudenceon.app.InfoActivity;
 import com.plumya.jurisprudenceon.app.SettingsActivity;
 import com.plumya.jurisprudenceon.fragments.AllRoomsFragment;
 import com.plumya.jurisprudenceon.fragments.ICRoomFragment;
@@ -204,10 +205,16 @@ public class MainActivity extends AppCompatActivity {
 //                }
 //                return true;
 //            }
-            case R.id.action_settings:
+            case R.id.action_settings: {
                 Intent intent = new Intent(this, SettingsActivity.class);
                 startActivity(intent);
                 return true;
+            }
+            case R.id.action_about: {
+                Intent intent = new Intent(this, InfoActivity.class);
+                startActivity(intent);
+                return true;
+            }
             default:
                 return super.onOptionsItemSelected(item);
         }

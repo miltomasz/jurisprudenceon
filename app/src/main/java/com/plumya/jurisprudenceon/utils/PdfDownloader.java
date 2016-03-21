@@ -7,6 +7,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.MalformedURLException;
+import java.net.SocketTimeoutException;
 import java.net.URI;
 import java.net.URL;
 
@@ -16,12 +17,14 @@ import java.net.URL;
 public class PdfDownloader {
     private static final int  MEGABYTE = 1024 * 1024;
 
-    public static void downloadFile(String fileUrl, File file){
+    public static void downloadFile(String fileUrl, File file) throws IOException {
         FileOutputStream fileOutputStream = null;
         try {
             URL url = new URL(fileUrl);
             HttpURLConnection urlConnection = (HttpURLConnection) url.openConnection();
             urlConnection.connect();
+            urlConnection.setConnectTimeout(30000);
+            urlConnection.setReadTimeout(30000);
 
             InputStream inputStream = urlConnection.getInputStream();
             fileOutputStream = new FileOutputStream(file);
@@ -35,8 +38,6 @@ public class PdfDownloader {
         } catch (FileNotFoundException e) {
             e.printStackTrace();
         } catch (MalformedURLException e) {
-            e.printStackTrace();
-        } catch (IOException e) {
             e.printStackTrace();
         }
     }
