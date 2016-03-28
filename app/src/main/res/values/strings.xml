@@ -21,7 +21,7 @@
     <string name="judgements_folder">uzasadnienia</string>
     <string name="preference_name">JurisprudencePref</string>
     <string name="legal_declaration_text">
-        Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin nibh augue, suscipit a, scelerisque sed, lacinia in, mi. Cras vel lorem. Etiam pellentesque aliquet tellus. Phasellus pharetra nulla ac diam.
+        Twórcy aplikacji nie ponoszą odpowiedzialności za treść i terminy publikowanych orzeczeń Sądu Najwyższego.
     </string>
     <string name="declaration_accepted">DECLARATION_ACCEPTED</string>
     <string name="action_about">O aplikacji</string>

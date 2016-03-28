@@ -31,7 +31,7 @@ import java.util.List;
 public class DownloadPdfTask extends AsyncTask<String, Void, String> {
 
     private static final String TAG = DownloadPdfTask.class.getSimpleName();
-    public static final String EMPTY_STRING = "";
+    private static final String EMPTY_STRING = "";
     private Activity mActivity;
     private String mFileUrl;
     private File mPdfFile;
@@ -112,16 +112,6 @@ public class DownloadPdfTask extends AsyncTask<String, Void, String> {
             // Instruct the user to install a PDF reader here, or something
             Log.d(TAG, "No app can perform the action");
             Toast.makeText(mActivity, R.string.app_not_available, Toast.LENGTH_LONG).show();
-        }
-    }
-
-    private void givePermissionToOpenPdfToAllApps(Uri path, Intent intent) {
-        PackageManager pm = mActivity.getPackageManager();
-        // Give permissions to the file to each external app that can open the file
-        List<ResolveInfo> activities = pm.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
-        for (ResolveInfo externalApp: activities){
-            String packageName = externalApp.activityInfo.packageName;
-            mActivity.grantUriPermission(packageName, path, Intent.FLAG_GRANT_READ_URI_PERMISSION | Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
         }
     }
 }

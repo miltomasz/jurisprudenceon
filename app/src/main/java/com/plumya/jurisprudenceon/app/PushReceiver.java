@@ -5,7 +5,9 @@ import android.app.PendingIntent;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v7.app.NotificationCompat;
+import android.util.Log;
 
+import com.crashlytics.android.Crashlytics;
 import com.parse.ParsePushBroadcastReceiver;
 import com.plumya.jurisprudenceon.MainActivity;
 import com.plumya.jurisprudenceon.R;
@@ -27,6 +29,7 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
             notificationMessage = json.getString("alert");
         } catch (JSONException e) {
             e.printStackTrace();
+            Crashlytics.log(Log.ERROR, TAG, "Could not read JSON for 'alert' tag.");
         }
         String readableNotificationMessage = NotificationMessageHelper.getMessage(notificationMessage);
         NotificationCompat.Builder builder = new NotificationCompat.Builder(context);
@@ -40,7 +43,7 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
                 .setContentIntent(PendingIntent.getActivity(context, 0,
                         notificationIntent, PendingIntent.FLAG_UPDATE_CURRENT))
                 .setAutoCancel(true)
-                .setSmallIcon(R.mipmap.ic_launcher)
+                .setSmallIcon(R.drawable.ic_account_balance_white_24dp)
                 .setContentTitle(context.getResources().getString(R.string.app_name))
                 .setColor(context.getResources().getColor(R.color.colorPrimary))
                 .setContentText(readableNotificationMessage)
@@ -85,6 +88,9 @@ public class PushReceiver extends ParsePushBroadcastReceiver {
         }
 
         private static String prepareMessage(String messageCode) {
+            if (messageCode == null || messageCode.isEmpty()) {
+                return "nowe orzeczenie";
+            }
             String message;
             if (Integer.parseInt(messageCode) > 4) {
                 message = "nowych orzeczeń";
