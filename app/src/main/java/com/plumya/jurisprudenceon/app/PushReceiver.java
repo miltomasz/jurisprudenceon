@@ -20,6 +20,23 @@ import org.json.JSONObject;
  */
 public class PushReceiver extends ParsePushBroadcastReceiver {
     private static final String TAG = PushReceiver.class.getSimpleName();
+    private static String sPushHash = "";
+
+    @Override
+    protected void onPushReceive(Context context, Intent intent) {
+        try {
+            JSONObject json = new JSONObject(intent.getExtras().getString("com.parse.Data"));
+            String currentPushHash = json.getString("push_hash");
+            if (sPushHash.equals(currentPushHash)) {
+                return;
+            } else {
+                sPushHash = currentPushHash;
+            }
+        } catch (JSONException e) {
+            Crashlytics.log(Log.ERROR, TAG, "Could not read JSON for 'push_hash' tag.");
+        }
+        super.onPushReceive(context, intent);
+    }
 
     @Override
     protected Notification getNotification(Context context, Intent intent) {

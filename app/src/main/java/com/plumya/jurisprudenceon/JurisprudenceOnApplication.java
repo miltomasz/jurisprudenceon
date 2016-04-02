@@ -21,7 +21,6 @@ import io.fabric.sdk.android.Fabric;
 public class JurisprudenceOnApplication extends Application {
     public static final String CHANNELS = "channels";
     public static final String JURISPRUDENCE_APP = "Orzecznictwo SN";
-    public static final String TAG = JurisprudenceOnApplication.class.getSimpleName();
 
     @Override
     public void onCreate() {
