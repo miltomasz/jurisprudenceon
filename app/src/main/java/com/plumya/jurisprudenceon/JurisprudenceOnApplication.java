@@ -34,7 +34,9 @@ public class JurisprudenceOnApplication extends Application {
             if (fetchedInstallation.getResult().getObjectId() == null && fetchedInstallation.getResult().get("deviceToken") == null) {
                 final TelephonyManager telephonyManager = (TelephonyManager) getBaseContext()
                         .getSystemService(Context.TELEPHONY_SERVICE);
-                currentInstallation.put("deviceId", telephonyManager.getDeviceId());
+                if (telephonyManager != null && telephonyManager.getDeviceId() != null) {
+                    currentInstallation.put("deviceId", telephonyManager.getDeviceId());
+                }
                 currentInstallation.saveInBackground(new SaveCallback() {
                     @Override
                     public void done(ParseException e) {
