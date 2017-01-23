@@ -56,6 +56,7 @@
 
             <TextView
                 android:id="@+id/issue"
+                android:textIsSelectable="true"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:paddingTop="@dimen/judgement_activity_medium_padding"

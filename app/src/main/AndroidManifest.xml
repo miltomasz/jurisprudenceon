@@ -119,6 +119,8 @@
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="079d98fea1a20f6d8bc53278137b25d67fc68cdf" />
+        <meta-data android:name="com.parse.push.gcm_sender_id"
+                   android:value="id:1064145244721" />
     </application>
 
 </manifest>

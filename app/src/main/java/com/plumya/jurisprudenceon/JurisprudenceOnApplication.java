@@ -26,7 +26,13 @@ public class JurisprudenceOnApplication extends Application {
     public void onCreate() {
         super.onCreate();
         Fabric.with(this, new Crashlytics());
-        Parse.initialize(this, "MQrDm7XKd6KrMwOx1m89qMNRpSDRzePGfpea1BaZ", "YEqL5U0e9mPlR2DZxph17FA42l3uhW77yiOt4eia");
+
+        Parse.initialize(new Parse.Configuration.Builder(this)
+//                .applicationId("MQrDm7XKd6KrMwOx1m89qMNRpSDRzePGfpea1BaZ")
+                .applicationId("3jh1j321khg3k12312kj3h123kh12")
+                .clientKey("YEqL5U0e9mPlR2DZxph17FA42l3uhW77yiOt4eia")
+                .server("http://sno.readma.com/parse/")
+                .build());
 
         final ParseInstallation currentInstallation = ParseInstallation.getCurrentInstallation();
         final Task<ParseObject> fetchedInstallation = currentInstallation.fetchIfNeededInBackground();
