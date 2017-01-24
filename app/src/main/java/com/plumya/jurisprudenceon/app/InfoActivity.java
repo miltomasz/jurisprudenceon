@@ -8,7 +8,9 @@ import android.support.v7.widget.Toolbar;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.TextView;
 
+import com.plumya.jurisprudenceon.BuildConfig;
 import com.plumya.jurisprudenceon.R;
 
 import butterknife.ButterKnife;
@@ -41,10 +43,21 @@ public class InfoActivity extends AppCompatActivity {
     }
 
     public static class InfoFragment extends Fragment {
+        @InjectView(R.id.version_id)
+        TextView tvVersion;
+
         @Nullable
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
-            return inflater.inflate(R.layout.info_fragment, container, false);
+            View view = inflater.inflate(R.layout.info_fragment, container, false);
+            ButterKnife.inject(this, view);
+            return view;
+        }
+
+        @Override
+        public void onViewCreated(View view, Bundle savedInstanceState) {
+            super.onViewCreated(view, savedInstanceState);
+            tvVersion.setText(BuildConfig.VERSION_CODE + "-" + BuildConfig.VERSION_NAME);
         }
     }
 }

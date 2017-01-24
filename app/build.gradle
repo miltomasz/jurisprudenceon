@@ -23,13 +23,13 @@ android {
         applicationId "com.plumya.jurisprudenceon"
         minSdkVersion 18
         targetSdkVersion 22
-        versionCode 6
-        versionName "1.2"
+        versionCode 8
+        versionName "1.4"
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         release {
-            minifyEnabled false
+            minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             zipAlignEnabled true
         }

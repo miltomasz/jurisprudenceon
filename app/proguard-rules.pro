@@ -15,3 +15,7 @@
 #-keepclassmembers class fqcn.of.javascript.interface.for.webview {
 #   public *;
 #}
+
+-dontwarn butterknife.**
+-dontwarn com.parse.**
+-dontwarn org.slf4j.**
